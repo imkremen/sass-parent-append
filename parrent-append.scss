@@ -12,23 +12,31 @@
    @return $list;
 }
 
-@function parent-append ($appendix, $parent) {
+@function parent-append ($appendix, $parent, $at-start) {
    $parentSelector: str-to-list(#{&});
    $lenght: length($parentSelector);
-   @if ($parent >=$lenght) or $parent < 0 {
+   @if $parent >=$lenght or $parent < 0 {
       @error "Index '#{$parent}' is out of range";
    }
    $pos: $lenght - $parent;
-   $selector: set-nth($parentSelector, $pos, nth($parentSelector, $pos) + $appendix);
-   @return $selector;
+   @if $at-start == false {
+    $selector: set-nth($parentSelector, $pos, nth($parentSelector, $pos) + $appendix);
+    @return $selector;
+   }
+   @if $at-start == true {
+     $selector: set-nth($parentSelector, $pos, $appendix + nth($parentSelector, $pos));
+     @return $selector;
+   }
+   
 }
 
 /// Append defined string to parent selector
 /// @require {function} parent-append
 /// @param {String} $appendix - selector that we want append to parent
 /// @param {Number} $parent [1] - index of parent selector
-@mixin parent-append ($appendix, $parent: 1) {
-   @at-root #{parent-append($appendix, $parent)} {
+/// @param {Boolean} $at-start [false] - append to start of parent selector
+@mixin parent-append ($appendix, $parent: 1, $at-start: false) {
+   @at-root #{parent-append($appendix, $parent, $at-start)} {
       @content;
    }
 }
