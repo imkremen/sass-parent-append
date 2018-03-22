@@ -14,11 +14,11 @@
 
 @function parent-append ($appendix, $parent, $at-start) {
    $parentSelector: str-to-list(#{&});
-   $lenght: length($parentSelector);
-   @if $parent >=$lenght or $parent < 0 {
+   $length: length($parentSelector);
+   @if $parent >= $length or $parent < 0 {
       @error "Index '#{$parent}' is out of range";
    }
-   $pos: $lenght - $parent;
+   $pos: $length - $parent;
    @if $at-start == false {
     $selector: set-nth($parentSelector, $pos, nth($parentSelector, $pos) + $appendix);
     @return $selector;
@@ -39,4 +39,37 @@
    @at-root #{parent-append($appendix, $parent, $at-start)} {
       @content;
    }
+}
+
+
+// Usage
+.ancestor {
+  display: inline-flex;
+  
+  .grandparent {
+    padding: 32px;
+    background-color: lightgreen;
+    
+    .parent {
+      padding: 32px;
+      background-color: blue;
+      
+      .elem {
+        padding: 16px;
+        background-color: white;
+        
+        @include parent-append(":focus", 3) {
+          box-shadow: inset 0 0 0 8px aqua;
+        }
+        
+        @include parent-append(":hover") {
+          background-color: fuchsia;
+        }
+        
+        @include parent-append("p", 0, true) {
+          background-color: green;
+        }
+      }
+    }
+  }
 }
