@@ -1,0 +1,34 @@
+@function str-to-list($string, $separator: ' ', $startAt: 1) {
+   $workStr: str-slice($string, $startAt);
+   $list: ();
+   $indexOfFirstSpace: str-index($workStr, $separator);
+   @if $indexOfFirstSpace==null {
+      $list: ($workStr);
+   }
+   @else {
+      $list: (str-slice($workStr, 1, $indexOfFirstSpace - 1));
+      $list: join($list, str-to-list($workStr, $startAt: $indexOfFirstSpace + 1));
+   }
+   @return $list;
+}
+
+@function parent-append ($appendix, $parent) {
+   $parentSelector: str-to-list(#{&});
+   $lenght: length($parentSelector);
+   @if ($parent >=$lenght) or $parent < 0 {
+      @error "Index '#{$parent}' is out of range";
+   }
+   $pos: $lenght - $parent;
+   $selector: set-nth($parentSelector, $pos, nth($parentSelector, $pos) + $appendix);
+   @return $selector;
+}
+
+/// Append defined string to parent selector
+/// @require {function} parent-append
+/// @param {String} $appendix - selector that we want append to parent
+/// @param {Number} $parent [1] - index of parent selector
+@mixin parent-append ($appendix, $parent: 1) {
+   @at-root #{parent-append($appendix, $parent)} {
+      @content;
+   }
+}
