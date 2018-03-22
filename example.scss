@@ -1,21 +1,27 @@
 .ancestor {
   display: inline-flex;
+  
   .grandparent {
     padding: 32px;
     background-color: lightgreen;
+    
     .parent {
       padding: 32px;
       background-color: blue;
+      
       .elem {
         padding: 16px;
         background-color: white;
+        
         @include parent-append(":focus", 3) {
           box-shadow: inset 0 0 0 8px aqua;
         }
-        @include parent-append(":hover", 2) {
+        
+        @include parent-append(":hover") {
           background-color: fuchsia;
         }
-        @include parent-append(":hover") {
+        
+        @include parent-append("p", 0, true) {
           background-color: green;
         }
       }
